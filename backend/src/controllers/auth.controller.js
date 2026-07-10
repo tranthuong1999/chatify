@@ -12,6 +12,7 @@ export const signUp = async (req, res) => {
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+        console.log("optimise email regex");
         return res.status(400).json({ message: 'Invalid email format' });
     }
 
