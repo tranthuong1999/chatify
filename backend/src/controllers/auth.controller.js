@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../lib/utils.js';
 import User from '../models/User.js';
+import { emailTemplate } from '../templates/emailTemplate.js';
+import { sendEmail } from '../services/sendEmail.js';
 
 export const signUp = async (req, res) => {
     const { email, password, fullName } = req.body;
@@ -28,6 +30,11 @@ export const signUp = async (req, res) => {
     if (newUser) {
         generateToken(newUser._id, res);
         await newUser.save();
+        await sendEmail({
+            to: email,
+            subject: "Welcome",
+            html: emailTemplate(fullName, process.env.CLIENT_URL),
+        });
         res.status(201).json({
             _id: newUser._id,
             email: newUser.email,
