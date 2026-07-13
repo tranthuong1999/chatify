@@ -69,3 +69,28 @@ export const logout = async (_, res) => {
     res.cookie("jwt", "", { maxAge: 0 });
     res.status(200).json({ message: "Logged out successfully" });
 }
+
+export const updateProfile = async (req, res) => {
+    try {
+        const { profilePic } = req.body;
+        if (!profilePic) {
+            return res.status(400).json({ message: "Profile picture is required" });
+        }
+
+        const user_id = req.user._id;
+        const uploadRespone = await cloudinary.uploader.upload(profilePic)
+        const updatedUser = await User.findByIdAndUpdate(
+            user_id,
+            { profilePic: uploadRespone.secure_url },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+    } catch (error) {
+        console.error("Error updating profile:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+}
