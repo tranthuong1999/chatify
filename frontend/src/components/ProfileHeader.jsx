@@ -63,16 +63,20 @@ const ProfileHeader = () => {
           </div>
 
           <div className="flex flex-col justify-center">
-            <div> Name</div>
-            <div> Status</div>
+            <div> {authUser.fullName}</div>
+            <div> Online</div>
           </div>
         </div>
         <div className="flex gap-3">
           <div onClick={handleLogout}>
-            <LogOutIcon />
+            <LogOutIcon className="size-5" />
           </div>
           <div onClick={handleSound}>
-            {isSoundEnabled ? <Volume2Icon /> : <VolumeOffIcon />}
+            {isSoundEnabled ? (
+              <Volume2Icon className="size-5" />
+            ) : (
+              <VolumeOffIcon className="size-5" />
+            )}
           </div>
         </div>
       </div>
