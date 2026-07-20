@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Message from "../models/Message.js";
+import cloudinary from "../lib/cloudinary.js";
 
 export const getAllContacts = async (req, res) => {
   try {
@@ -14,21 +15,22 @@ export const getAllContacts = async (req, res) => {
   }
 };
 
-export const getMessagsByUserId = async (req, res) => {
+export const getMessagesByUserId = async (req, res) => {
   try {
     const myId = req.user._id;
     const { id: userToChatId } = req.params;
 
-    const message = await Message.find({
+    const messages = await Message.find({
       $or: [
-        { sender: myId, receiver: userToChatId },
-        { sender: userToChatId, receiver: myId },
+        { senderId: myId, receiverId: userToChatId },
+        { senderId: userToChatId, receiverId: myId },
       ],
-    }).sort({ createdAt: 1 });
-    return res.json(message);
+    });
+
+    res.status(200).json(messages);
   } catch (error) {
-    console.error("Error fetching messages:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    console.log("Error in getMessages controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
